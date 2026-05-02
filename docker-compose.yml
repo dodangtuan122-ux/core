@@ -1,9 +1,29 @@
 version: "3.8"
 services:
-  devforge:
+  devforge-api:
     build: .
-    ports:
-      - "8000:8000"
+    container_name: devforge-api
+    ports: ["8000:8000"]
     environment:
       - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY}
       - MIMO_API_KEY=${MIMO_API_KEY}
+      - ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=devforge
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=devforge
+    volumes: [postgres_data:/var/lib/postgresql/data]
+    restart: unless-stopped
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+volumes:
+  postgres_data:

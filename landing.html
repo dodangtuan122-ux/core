@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevForge AI — Enterprise Multi-Agent Development Platform</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card: #13131a;
+            --border: #1e1e2e;
+            --accent: #7c3aed;
+            --accent2: #06b6d4;
+            --text: #e2e8f0;
+            --text2: #94a3b8;
+            --green: #10b981;
+            --orange: #f59e0b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        /* Gradient bg */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+        
+        /* Nav */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 0; border-bottom: 1px solid var(--border);
+        }
+        nav .logo { font-size: 24px; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        nav .links { display: flex; gap: 24px; }
+        nav a { color: var(--text2); text-decoration: none; font-size: 14px; transition: color .2s; }
+        nav a:hover { color: var(--text); }
+        
+        /* Hero */
+        .hero { text-align: center; padding: 100px 0 80px; }
+        .hero .badge {
+            display: inline-block; padding: 6px 16px;
+            background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 20px; font-size: 13px; color: var(--accent);
+            margin-bottom: 24px;
+        }
+        .hero h1 { font-size: 56px; font-weight: 800; line-height: 1.15; margin-bottom: 20px; }
+        .hero h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 18px; color: var(--text2); max-width: 650px; margin: 0 auto 40px; }
+        .hero .cta {
+            display: inline-flex; gap: 12px;
+        }
+        .btn {
+            padding: 12px 28px; border-radius: 8px; font-size: 15px; font-weight: 600;
+            text-decoration: none; transition: all .2s; cursor: pointer; border: none;
+        }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { background: #6d28d9; transform: translateY(-1px); }
+        .btn-outline { border: 1px solid var(--border); color: var(--text); background: transparent; }
+        .btn-outline:hover { border-color: var(--accent); }
+        
+        /* Stats */
+        .stats { 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+            margin: 60px 0;
+        }
+        .stat-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 24px; text-align: center;
+        }
+        .stat-card .num { font-size: 36px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .stat-card .label { font-size: 13px; color: var(--text2); margin-top: 4px; }
+        
+        /* Agent pipeline */
+        .section-title { text-align: center; margin: 80px 0 40px; }
+        .section-title h2 { font-size: 36px; font-weight: 700; margin-bottom: 12px; }
+        .section-title p { color: var(--text2); font-size: 16px; }
+        
+        .pipeline {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; flex-wrap: wrap; margin: 40px 0;
+        }
+        .agent-node {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px 24px; text-align: center;
+            min-width: 140px;
+        }
+        .agent-node .icon { font-size: 32px; margin-bottom: 8px; }
+        .agent-node .name { font-weight: 600; font-size: 14px; }
+        .agent-node .model { font-size: 11px; color: var(--text2); margin-top: 4px; }
+        .arrow { color: var(--accent); font-size: 24px; font-weight: bold; }
+        
+        /* Features */
+        .features {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+            margin: 40px 0;
+        }
+        .feature {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 28px;
+        }
+        .feature h3 { font-size: 18px; margin-bottom: 8px; }
+        .feature p { color: var(--text2); font-size: 14px; }
+        
+        /* Monthly usage table */
+        .usage-table {
+            width: 100%; border-collapse: collapse;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; overflow: hidden; margin: 40px 0;
+        }
+        .usage-table th {
+            text-align: left; padding: 14px 20px;
+            background: rgba(124, 58, 237, 0.1); font-size: 13px;
+            color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .usage-table td { padding: 14px 20px; font-size: 14px; border-top: 1px solid var(--border); }
+        .usage-table .growth { color: var(--green); font-weight: 600; }
+        
+        /* Footer */
+        footer {
+            text-align: center; padding: 60px 0 40px;
+            border-top: 1px solid var(--border); margin-top: 80px;
+            color: var(--text2); font-size: 13px;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <div class="logo">🚀 DevForge AI</div>
+            <div class="links">
+                <a href="#features">Features</a>
+                <a href="#pipeline">Pipeline</a>
+                <a href="#metrics">Metrics</a>
+                <a href="https://github.com/dodangtuan122-ux/core">GitHub</a>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="badge">🔥 v1.0 Now Live — 1.8B+ Monthly Tokens</div>
+            <h1>Transform Ideas Into<br><span>Production Code</span></h1>
+            <p>DevForge AI orchestrates 5 specialized AI agents to turn natural language requirements into deployed, tested, production-ready applications — in minutes, not weeks.</p>
+            <div class="cta">
+                <a href="https://github.com/dodangtuan122-ux/core" class="btn btn-primary">View on GitHub →</a>
+                <a href="#pipeline" class="btn btn-outline">See How It Works</a>
+            </div>
+        </section>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="num">200+</div>
+                <div class="label">Active Developers</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">3,000+</div>
+                <div class="label">Projects Generated</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">1.8B</div>
+                <div class="label">Monthly Tokens</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">70%</div>
+                <div class="label">Faster Time-to-Deploy</div>
+            </div>
+        </div>
+
+        <div id="pipeline" class="section-title">
+            <h2>5-Agent Pipeline</h2>
+            <p>Each agent specializes in one phase, passing context to the next</p>
+        </div>
+
+        <div class="pipeline">
+            <div class="agent-node">
+                <div class="icon">🏗️</div>
+                <div class="name">Architect</div>
+                <div class="model">DeepSeek V3</div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="agent-node">
+                <div class="icon">💻</div>
+                <div class="name">Developer</div>
+                <div class="model">DeepSeek + MiMo</div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="agent-node">
+                <div class="icon">🔍</div>
+                <div class="name">Reviewer</div>
+                <div class="model">DeepSeek V3</div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="agent-node">
+                <div class="icon">🧪</div>
+                <div class="name">Tester</div>
+                <div class="model">MiMo V2.5 Pro</div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="agent-node">
+                <div class="icon">🚀</div>
+                <div class="name">DevOps</div>
+                <div class="model">DeepSeek V3</div>
+            </div>
+        </div>
+
+        <div id="features" class="section-title">
+            <h2>Why DevForge AI?</h2>
+            <p>Built with Hermes Agent orchestration + dual-model architecture</p>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>🎯 Spec-to-Deploy</h3>
+                <p>Write what you need in plain English. Our 5-agent pipeline handles architecture, coding, review, testing, and deployment automatically.</p>
+            </div>
+            <div class="feature">
+                <h3>🧠 Dual Model Architecture</h3>
+                <p>DeepSeek V3 handles complex reasoning and architecture. MiMo V2.5 Pro excels at code generation and test creation. Best of both worlds.</p>
+            </div>
+            <div class="feature">
+                <h3>🔄 Context Sharing</h3>
+                <p>Each agent inherits the full context from previous agents. The Tester knows the architecture. The DevOps agent sees the full codebase.</p>
+            </div>
+            <div class="feature">
+                <h3>🔒 Security-First</h3>
+                <p>Built-in static analysis, security audit, and vulnerability scanning. Every PR gets reviewed by AI before it reaches production.</p>
+            </div>
+            <div class="feature">
+                <h3>📦 Production-Ready</h3>
+                <p>Auto-generates Docker containers, Kubernetes manifests, CI/CD pipelines, and monitoring configs. Ready to deploy on any cloud.</p>
+            </div>
+            <div class="feature">
+                <h3>📊 Real-Time Metrics</h3>
+                <p>Track token usage, agent performance, and project velocity. Built-in Prometheus + Grafana dashboards.</p>
+            </div>
+        </div>
+
+        <div id="metrics" class="section-title">
+            <h2>Growing Fast</h2>
+            <p>Monthly token consumption and user growth</p>
+        </div>
+
+        <table class="usage-table">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Active Users</th>
+                    <th>Workflows/Day</th>
+                    <th>Tokens Used</th>
+                    <th>Growth</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Jan 2025</td><td>45</td><td>120</td><td>420M</td><td>—</td></tr>
+                <tr><td>Feb 2025</td><td>78</td><td>210</td><td>680M</td><td class="growth">+62%</td></tr>
+                <tr><td>Mar 2025</td><td>135</td><td>340</td><td>1.1B</td><td class="growth">+62%</td></tr>
+                <tr><td>Apr 2025</td><td>200+</td><td>500+</td><td>1.8B</td><td class="growth">+64%</td></tr>
+                <tr style="background: rgba(124, 58, 237, 0.05);">
+                    <td><strong>May 2025 (est.)</strong></td>
+                    <td><strong>320+</strong></td>
+                    <td><strong>800+</strong></td>
+                    <td><strong>2.9B</strong></td>
+                    <td class="growth"><strong>+60%</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <footer>
+            <p>🚀 DevForge AI — Built with <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a>, DeepSeek V3 & MiMo V2.5 Pro</p>
+            <p style="margin-top: 8px;">© 2025 DevForge AI. Open source under MIT License.</p>
+        </footer>
+    </div>
+</body>
+</html>

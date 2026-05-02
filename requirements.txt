@@ -1,3 +1,32 @@
+# DevForge AI Dependencies
 python>=3.11
 pydantic>=2.0
 httpx>=0.25
+
+# AI/LLM
+openai>=1.0
+anthropic>=0.18
+
+# Infrastructure
+docker>=7.0
+kubernetes>=28.0
+pyyaml>=6.0
+
+# Web
+fastapi>=0.104
+uvicorn>=0.24
+sqlalchemy>=2.0
+
+# Testing
+pytest>=7.4
+pytest-cov>=4.1
+pytest-asyncio>=0.21
+
+# Monitoring
+prometheus-client>=0.19
+structlog>=23.0
+
+# CLI
+rich>=13.0
+click>=8.1
+python-dotenv>=1.0
